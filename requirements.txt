@@ -1,0 +1,5 @@
+beautifulsoup4==4.6.0
+bs4==0.0.1
+future==0.16.0
+parsedatetime==2.4
+PyRSS2Gen==1.1
