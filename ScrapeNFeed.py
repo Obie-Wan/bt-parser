@@ -37,7 +37,7 @@ class WebPageMetadata:
 
     def pickle(self):
         s = pickle.dumps(self)
-        f = open(self.pickleFile, 'w')
+        f = open(self.pickleFile, 'wb')
         f.write(s)
         f.close()
 
@@ -48,6 +48,9 @@ class WebPageMetadata:
             request.add_header('If-None-Match', self.etag)
         if self.lastModified:
             request.add_header('If-Modified-Since', self.lastModified)
+
+        request.add_header('user-agent',
+         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36')
         response = urllib.request.urlopen(request)
 
         headers = response.info()
@@ -100,7 +103,7 @@ class ScrapedFeed(RSS2, WebPageMetadata):
                 raise e
 
     def writeRSS(self):
-        f = open(self.rssFile, 'w')
+        f = open(self.rssFile, 'w', encoding='utf-8')
         self.write_xml(f)
         f.close()
 
@@ -134,7 +137,7 @@ class ScrapedFeed(RSS2, WebPageMetadata):
                       'comments',' source'):
             s = getattr(item, field, None)
             if s:
-                setattr(item, field, unicode(s))
+                setattr(item, field, s)
             
         if self.hasSeen(item.guid):
             #print "Checking for newer version of %s", item.guid.guid
@@ -173,8 +176,8 @@ class ScrapedFeed(RSS2, WebPageMetadata):
 
     def load(subclass, title, url, description, rssFile=None,
              pickleFile=None, maxItems=20, refresh=True, **kwargs):    
-        if pickleFile and os.path.exists(pickleFile):
-            f = open(pickleFile, 'r')
+        if pickleFile and os.path.exists(pickleFile) and os.path.getsize(pickleFile) > 0:    
+            f = open(pickleFile, 'rb')
             feed = pickle.load(f)
             feed.title = title
             feed.description = description

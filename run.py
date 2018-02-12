@@ -10,4 +10,4 @@ smf_feed.SMFFeed.load("Forum Recent Posts",
                  'Recent posts for Forum',
                  'smf.xml', 
 		 'smf.pickle',
- 		 maxItems = 100)
+ 		 maxItems = 400)
